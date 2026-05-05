@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SmartWallet.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:SmartWallet.Views"
+    Title="SmartWallet">
+
+    <TabBar>
+        <Tab Title="Home" Icon="home.png">
+            <ShellContent ContentTemplate="{DataTemplate views:HomeView}" Route="HomeView" />
+        </Tab>
+
+        <Tab Title="Wallet" Icon="wallet.png">
+            <ShellContent ContentTemplate="{DataTemplate views:TransactionsView}" Route="TransactionsView" />
+        </Tab>
+
+        <Tab Title="Statistics" Icon="statistics.png">
+            <ShellContent ContentTemplate="{DataTemplate views:StatisticsView}" Route="StatisticsView" />
+        </Tab>
+
+        <Tab Title="Settings" Icon="settings.png">
+            <ShellContent ContentTemplate="{DataTemplate views:SettingsView}" Route="SettingsView" />
+        </Tab>
+    </TabBar>
+
+</Shell>

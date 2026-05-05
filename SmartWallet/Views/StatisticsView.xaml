@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:chart="clr-namespace:Syncfusion.Maui.Toolkit.Charts;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:viewmodels="clr-namespace:SmartWallet.ViewModels"
+             x:DataType="viewmodels:StatisticsViewModel"
+             x:Class="SmartWallet.Views.StatisticsView"
+             Title="Statistics">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            
+            <Border Stroke="LightGray" 
+                    StrokeShape="RoundRectangle 10" 
+                    BackgroundColor="White" 
+                    Padding="15,0" 
+                    HeightRequest="45" 
+                    HorizontalOptions="Center"
+                    MinimumWidthRequest="200">
+                
+                <Picker ItemsSource="{Binding Periods}"
+                        SelectedItem="{Binding SelectedPeriod}"
+                        Title="Select period"
+                        FontSize="18"
+                        FontAttributes="Bold"
+                        TextColor="Black"
+                        HorizontalTextAlignment="Center"
+                        VerticalOptions="Center" />
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="15">
+                <Border Grid.Column="0" StrokeShape="RoundRectangle 10" BackgroundColor="#E8F5E9" Padding="15">
+                    <VerticalStackLayout>
+                        <Label Text="Income" TextColor="Gray" FontSize="14" />
+                        <Label Text="{Binding TotalIncome, StringFormat='{0:C2}'}" TextColor="#4CAF50" FontSize="18" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Column="1" StrokeShape="RoundRectangle 10" BackgroundColor="#FFEBEE" Padding="15">
+                    <VerticalStackLayout>
+                        <Label Text="Expenses" TextColor="Gray" FontSize="14" />
+                        <Label Text="{Binding TotalExpense, StringFormat='{0:C2}'}" TextColor="#F44336" FontSize="18" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <Border StrokeShape="RoundRectangle 10" BackgroundColor="#F3E5F5" Padding="15" HorizontalOptions="Fill">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                    <Label Text="Net Balance:" TextColor="Gray" FontSize="16" VerticalOptions="Center"/>
+                    <Label Text="{Binding NetBalance, StringFormat='{0:C2}'}" TextColor="#9C27B0" FontSize="20" FontAttributes="Bold" />
+                </HorizontalStackLayout>
+            </Border>
+
+            <Label Text="Expenses by Category" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
+            
+            <Border Stroke="LightGray" 
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 10" 
+                    BackgroundColor="White" 
+                    Padding="10">
+                
+                <Grid>
+                    
+                    <Grid HeightRequest="300" IsVisible="{Binding HasExpenses}">
+                        <chart:SfCircularChart>
+                            <chart:SfCircularChart.Legend>
+                                <chart:ChartLegend />
+                            </chart:SfCircularChart.Legend>
+
+                            <chart:PieSeries
+                                ItemsSource="{Binding ExpensesByCategory}"
+                                XBindingPath="Category"
+                                YBindingPath="Amount"
+                                ShowDataLabels="True"
+                                EnableTooltip="True" />
+                        </chart:SfCircularChart>
+                    </Grid>
+
+                    <VerticalStackLayout HeightRequest="300" 
+                                         IsVisible="{Binding IsEmpty}" 
+                                         VerticalOptions="Center" 
+                                         HorizontalOptions="Center" 
+                                         Spacing="15">
+                        
+                        <Label Text="No expenses this period" 
+                               FontSize="18" 
+                               TextColor="Gray" 
+                               FontAttributes="Bold" 
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                    
+                </Grid>
+                
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:SmartWallet.ViewModels"
+             x:DataType="viewmodels:SettingsViewModel"
+             x:Class="SmartWallet.Views.SettingsView"
+             Title="Settings">
+
+    <TableView Intent="Settings">
+        <TableRoot>
+            
+            <TableSection Title="Security">
+                <TextCell Text="Change PIN Code" 
+                          Detail="Update your 6-digit access code"
+                          Command="{Binding ChangePinCommand}" />
+            </TableSection>
+
+            <TableSection Title="Data Management">
+                <TextCell Text="Export to json" 
+                          Detail="Save your history to an Excel file"
+                          Command="{Binding ExportToJsonCommand}" />
+            </TableSection>
+            
+            <TableSection Title="About App">
+                <TextCell Text="Version" Detail="1.0.0" />
+                <TextCell Text="Developer" Detail="Tomáš Olbert" />
+            </TableSection>
+
+        </TableRoot>
+    </TableView>
+
+</ContentPage>

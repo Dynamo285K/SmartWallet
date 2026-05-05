@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:SmartWallet.ViewModels"
+             xmlns:models="clr-namespace:SmartWallet.Models.Entities"
+             x:DataType="viewmodels:TransactionsViewModel"
+             x:Class="SmartWallet.Views.TransactionsView"
+             Title="Wallet History">
+
+    <!-- Zmena: Pridané tretie Auto pre nový riadok s filtrami -->
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Padding="20">
+        
+        <!-- Nadpis -->
+        <Label Grid.Row="0" Text="All Transactions" FontSize="24" FontAttributes="Bold" Margin="0,0,0,15" />
+        
+        <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" HorizontalOptions="Center" />
+
+        <!-- Vyhľadávanie -->
+        <Border Grid.Row="1"
+                Margin="0,0,0,10"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="1"
+                Stroke="LightGray"
+                BackgroundColor="White"
+                HeightRequest="45">
+            
+            <Grid ColumnDefinitions="Auto, *" Padding="10,0">
+                <Image Grid.Column="0" 
+                       Source="search.png"
+                       WidthRequest="20"
+                       HeightRequest="20"
+                       VerticalOptions="Center" 
+                       Margin="10,0,5,0" />
+                
+                <Entry Grid.Column="1"
+                       Placeholder="Search by category or note..."
+                       PlaceholderColor="Gray"
+                       TextColor="Black"
+                       Text="{Binding SearchText}"
+                       BackgroundColor="Transparent"
+                       ClearButtonVisibility="WhileEditing"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
+        
+        <!-- NOVÁ SEKCIA: Filtre (Roletky) -->
+        <Grid Grid.Row="2" ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,0,0,15">
+            <!-- Filter Kategórií -->
+            <Border Grid.Column="0" StrokeShape="RoundRectangle 10" Stroke="LightGray" BackgroundColor="White" HeightRequest="40" Padding="10,0">
+                <Picker Title="Category" 
+                        ItemsSource="{Binding CategoriesFilter}" 
+                        SelectedItem="{Binding SelectedCategory}" 
+                        TextColor="Black" 
+                        TitleColor="Gray"
+                        VerticalOptions="Center" />
+            </Border>
+            
+            <!-- Filter Obdobia (Mesiac/Rok) -->
+            <Border Grid.Column="1" StrokeShape="RoundRectangle 10" Stroke="LightGray" BackgroundColor="White" HeightRequest="40" Padding="10,0">
+                <Picker Title="Period" 
+                        ItemsSource="{Binding PeriodsFilter}" 
+                        SelectedItem="{Binding SelectedPeriod}" 
+                        TextColor="Black" 
+                        TitleColor="Gray"
+                        VerticalOptions="Center" />
+            </Border>
+        </Grid>
+        
+        <!-- Zoznam transakcií posunutý na Grid.Row="3" -->
+        <RefreshView Grid.Row="3" 
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshTransactionsCommand}">
+            
+            <CollectionView ItemsSource="{Binding GroupedTransactions}" IsGrouped="True">
+                
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center" 
+                                         VerticalOptions="Center" 
+                                         Spacing="15" 
+                                         Margin="0, 80, 0, 0">
+
+                        <Image Source="hourglass_empty.png" VerticalOptions="Center" HorizontalOptions="Center"/>
+                        <Label Text="No transactions yet." 
+                               FontSize="20" 
+                               FontAttributes="Bold" 
+                               TextColor="Gray" 
+                               HorizontalOptions="Center" />
+                        <Label Text="Add your first income or expense." 
+                               FontSize="14" 
+                               TextColor="LightGray" 
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate x:DataType="models:TransactionGroup">
+                        <Label Text="{Binding Name}" 
+                               FontSize="14" 
+                               FontAttributes="Bold" 
+                               TextColor="Gray" 
+                               Margin="5,15,0,5" />
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Transaction">
+                        
+                        <SwipeView Margin="0,5">
+                            
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Reveal">
+                                    
+                                    <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=EditTransactionCommand}"
+                                                   CommandParameter="{Binding .}">
+                                        
+                                        <Border BackgroundColor="#2196F3" 
+                                                StrokeShape="RoundRectangle 10"
+                                                StrokeThickness="0"
+                                                WidthRequest="70"
+                                                Margin="10,0,0,0">
+                                            
+                                            <Image Source="edit.png" 
+                                                WidthRequest="28" 
+                                                HeightRequest="28" 
+                                                HorizontalOptions="Center" 
+                                                VerticalOptions="Center" />
+                                        </Border>
+                                    </SwipeItemView>
+                                    
+                                    <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=DeleteTransactionCommand}"
+                                                   CommandParameter="{Binding .}">
+                                        
+                                        <Border BackgroundColor="#F44336" 
+                                                StrokeShape="RoundRectangle 10"
+                                                StrokeThickness="0"
+                                                WidthRequest="70"
+                                                Margin="10,0,0,0">
+                                            
+                                            <Image Source="delete.png" 
+                                                WidthRequest="28" 
+                                                HeightRequest="28" 
+                                                HorizontalOptions="Center" 
+                                                VerticalOptions="Center" />
+                                        </Border>
+                                    </SwipeItemView>
+                                    
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Border Padding="15" 
+                                    StrokeShape="RoundRectangle 10" 
+                                    StrokeThickness="1"
+                                    Stroke="LightGray" 
+                                    BackgroundColor="White">
+                                
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <VerticalStackLayout Grid.Column="0">
+                                        <Label Text="{Binding Category}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding Date, StringFormat='{0:dd.MM.yyyy HH:mm}'}" FontSize="12" TextColor="Gray" />
+                                    </VerticalStackLayout>
+
+                                    <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <Label Text="-" TextColor="#F44336" FontSize="16" FontAttributes="Bold">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsIncome}" Value="True">
+                                                    <Setter Property="Text" Value="+" />
+                                                    <Setter Property="TextColor" Value="#4CAF50" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                        <Label Text="{Binding Amount, StringFormat='{0:C2}'}" TextColor="#F44336" FontSize="16" FontAttributes="Bold">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsIncome}" Value="True">
+                                                    <Setter Property="TextColor" Value="#4CAF50" />
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Border>
+                            
+                        </SwipeView>
+                        
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>
