@@ -15,12 +15,12 @@ public class DialogService : IDialogService
 {
     public Task ShowAlertAsync(string title, string message, string cancel = "OK")
     {
-        return CurrentPage.DisplayAlert(title, message, cancel);
+        return CurrentPage.DisplayAlertAsync(title, message, cancel);
     }
 
     public Task<bool> ShowConfirmationAsync(string title, string message, string accept, string cancel)
     {
-        return CurrentPage.DisplayAlert(title, message, accept, cancel);
+        return CurrentPage.DisplayAlertAsync(title, message, accept, cancel);
     }
 
     public Task<string?> ShowPromptAsync(string title, string message)
@@ -30,6 +30,6 @@ public class DialogService : IDialogService
 
     private static Page CurrentPage =>
         Shell.Current?.CurrentPage
-        ?? Application.Current?.Windows.FirstOrDefault()?.Page
+        ?? (Application.Current?.Windows.Count > 0 ? Application.Current.Windows[0].Page : null)
         ?? throw new InvalidOperationException("No active page is available for dialogs.");
 }

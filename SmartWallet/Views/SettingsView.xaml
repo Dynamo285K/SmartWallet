@@ -4,29 +4,69 @@
              xmlns:viewmodels="clr-namespace:SmartWallet.ViewModels"
              x:DataType="viewmodels:SettingsViewModel"
              x:Class="SmartWallet.Views.SettingsView"
-             Title="Settings">
+             Title="Settings"
+             BackgroundColor="#F5F5F5">
 
-    <TableView Intent="Settings">
-        <TableRoot>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
             
-            <TableSection Title="Security">
-                <TextCell Text="Change PIN Code" 
-                          Detail="Update your 6-digit access code"
-                          Command="{Binding ChangePinCommand}" />
-            </TableSection>
+            <VerticalStackLayout Spacing="8">
+                <Label Text="SECURITY" FontSize="13" FontAttributes="Bold" TextColor="Gray" Margin="10,0,0,0" />
+                
+                <Border Stroke="LightGray" StrokeThickness="1" StrokeShape="RoundRectangle 10" BackgroundColor="White">
+                    <Grid Padding="15" RowDefinitions="Auto">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ChangePinCommand}" />
+                        </Grid.GestureRecognizers>
+                        
+                        <VerticalStackLayout>
+                            <Label Text="Change PIN Code" FontSize="16" TextColor="Black" />
+                            <Label Text="Update your 6-digit access code" FontSize="12" TextColor="Gray" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
 
-            <TableSection Title="Data Management">
-                <TextCell Text="Export to json" 
-                          Detail="Save your history to an Excel file"
-                          Command="{Binding ExportToJsonCommand}" />
-            </TableSection>
+            <VerticalStackLayout Spacing="8">
+                <Label Text="DATA MANAGEMENT" FontSize="13" FontAttributes="Bold" TextColor="Gray" Margin="10,0,0,0" />
+                
+                <Border Stroke="LightGray" StrokeThickness="1" StrokeShape="RoundRectangle 10" BackgroundColor="White">
+                    <Grid Padding="15" RowDefinitions="Auto">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ExportToJsonCommand}" />
+                        </Grid.GestureRecognizers>
+                        
+                        <VerticalStackLayout>
+                            <Label Text="Export to JSON" FontSize="16" TextColor="Black" />
+                            <Label Text="Save your history to a data file" FontSize="12" TextColor="Gray" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
             
-            <TableSection Title="About App">
-                <TextCell Text="Version" Detail="1.0.0" />
-                <TextCell Text="Developer" Detail="Tomáš Olbert" />
-            </TableSection>
+            <VerticalStackLayout Spacing="8">
+                <Label Text="ABOUT APP" FontSize="13" FontAttributes="Bold" TextColor="Gray" Margin="10,0,0,0" />
+                
+                <Border Stroke="LightGray" StrokeThickness="1" StrokeShape="RoundRectangle 10" BackgroundColor="White">
+                    <VerticalStackLayout>
+                        
+                        <Grid Padding="15" ColumnDefinitions="*, Auto">
+                            <Label Grid.Column="0" Text="Version" FontSize="16" TextColor="Black" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="1.0.0" FontSize="16" TextColor="Gray" VerticalOptions="Center" />
+                        </Grid>
 
-        </TableRoot>
-    </TableView>
+                        <BoxView HeightRequest="1" Color="#EEEEEE" />
+
+                        <Grid Padding="15" ColumnDefinitions="*, Auto">
+                            <Label Grid.Column="0" Text="Developer" FontSize="16" TextColor="Black" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="Tomáš Olbert" FontSize="16" TextColor="Gray" VerticalOptions="Center" />
+                        </Grid>
+                        
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>

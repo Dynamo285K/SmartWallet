@@ -4,45 +4,34 @@ using SmartWallet.Models.Services;
 
 namespace SmartWallet.ViewModels;
 
-public partial class ChangePinViewModel : ObservableObject
+public partial class ChangePinViewModel(
+    AuthService authService,
+    IDialogService dialogService,
+    IWalletNavigationService navigationService) : ObservableObject
 {
-    private readonly AuthService _authService;
-    private readonly IDialogService _dialogService;
-    private readonly IWalletNavigationService _navigationService;
-
     private bool _isEnteringNewPin;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PinDisplay))]
-    private string enteredPin = string.Empty;
+    public partial string EnteredPin { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string errorMessage = string.Empty;
+    public partial string ErrorMessage { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string titleText = "Enter CURRENT PIN";
+    public partial string TitleText { get; set; } = "Enter CURRENT PIN";
 
     [ObservableProperty]
-    private bool isBusy;
+    public partial bool IsBusy { get; set; }
 
     public string PinDisplay
     {
         get
         {
-            string filled = new string('⬤', EnteredPin.Length);
-            string empty = new string('○', 6 - EnteredPin.Length);
+            var filled = new string('⬤', EnteredPin.Length);
+            var empty = new string('○', 6 - EnteredPin.Length);
             return string.Join(" ", (filled + empty).ToCharArray());
         }
-    }
-
-    public ChangePinViewModel(
-        AuthService authService,
-        IDialogService dialogService,
-        IWalletNavigationService navigationService)
-    {
-        _authService = authService;
-        _dialogService = dialogService;
-        _navigationService = navigationService;
     }
 
     [RelayCommand]
@@ -77,7 +66,7 @@ public partial class ChangePinViewModel : ObservableObject
         {
             if (!_isEnteringNewPin) 
             {
-                var isCorrect = await _authService.VerifyPinAsync(EnteredPin);
+                var isCorrect = await authService.VerifyPinAsync(EnteredPin);
                 if (isCorrect)
                 {
                     _isEnteringNewPin = true; 
@@ -92,9 +81,9 @@ public partial class ChangePinViewModel : ObservableObject
             }
             else 
             {
-                await _authService.SetPinAsync(EnteredPin);
-                await _dialogService.ShowAlertAsync("Success", "Your PIN has been successfully changed.");
-                await _navigationService.GoBackAsync();
+                await authService.SetPinAsync(EnteredPin);
+                await dialogService.ShowAlertAsync("Success", "Your PIN has been successfully changed.");
+                await navigationService.GoBackAsync();
             }
         }
         finally

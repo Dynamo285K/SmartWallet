@@ -1,4 +1,4 @@
-namespace SmartWallet.Models;
+namespace SmartWallet.Models.Entities;
 
 public class ExpenseChartItem
 {

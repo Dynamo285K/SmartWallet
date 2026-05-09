@@ -2,7 +2,7 @@ using SmartWallet.ViewModels;
 
 namespace SmartWallet.Views;
 
-public partial class SettingsView : ContentPage
+public partial class SettingsView
 {
     public SettingsView(SettingsViewModel viewModel)
     {

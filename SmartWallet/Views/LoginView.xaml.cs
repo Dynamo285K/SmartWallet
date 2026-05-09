@@ -2,7 +2,7 @@ using SmartWallet.ViewModels;
 
 namespace SmartWallet.Views;
 
-public partial class LoginView : ContentPage
+public partial class LoginView
 {
     private readonly LoginViewModel _viewModel;
 
@@ -12,9 +12,23 @@ public partial class LoginView : ContentPage
         BindingContext = _viewModel = viewModel;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.InitializeAsync();
+        
+        _ = InitializeOnAppearingAsync();
+    }
+
+    private async Task InitializeOnAppearingAsync()
+    {
+        try
+        {
+            await _viewModel.InitializeAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            await DisplayAlertAsync("Error", "Unable to initialize login.", "OK");
+        }
     }
 }

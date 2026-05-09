@@ -7,15 +7,12 @@
              x:Class="SmartWallet.Views.TransactionsView"
              Title="Wallet History">
 
-    <!-- Zmena: Pridané tretie Auto pre nový riadok s filtrami -->
     <Grid RowDefinitions="Auto, Auto, Auto, *" Padding="20">
         
-        <!-- Nadpis -->
         <Label Grid.Row="0" Text="All Transactions" FontSize="24" FontAttributes="Bold" Margin="0,0,0,15" />
         
         <ActivityIndicator Grid.Row="0" IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" HorizontalOptions="Center" />
 
-        <!-- Vyhľadávanie -->
         <Border Grid.Row="1"
                 Margin="0,0,0,10"
                 StrokeShape="RoundRectangle 10"
@@ -43,9 +40,7 @@
             </Grid>
         </Border>
         
-        <!-- NOVÁ SEKCIA: Filtre (Roletky) -->
         <Grid Grid.Row="2" ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,0,0,15">
-            <!-- Filter Kategórií -->
             <Border Grid.Column="0" StrokeShape="RoundRectangle 10" Stroke="LightGray" BackgroundColor="White" HeightRequest="40" Padding="10,0">
                 <Picker Title="Category" 
                         ItemsSource="{Binding CategoriesFilter}" 
@@ -55,7 +50,6 @@
                         VerticalOptions="Center" />
             </Border>
             
-            <!-- Filter Obdobia (Mesiac/Rok) -->
             <Border Grid.Column="1" StrokeShape="RoundRectangle 10" Stroke="LightGray" BackgroundColor="White" HeightRequest="40" Padding="10,0">
                 <Picker Title="Period" 
                         ItemsSource="{Binding PeriodsFilter}" 
@@ -66,7 +60,6 @@
             </Border>
         </Grid>
         
-        <!-- Zoznam transakcií posunutý na Grid.Row="3" -->
         <RefreshView Grid.Row="3" 
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshTransactionsCommand}">

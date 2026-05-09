@@ -6,30 +6,23 @@ using SmartWallet.Models.Services;
 
 namespace SmartWallet.ViewModels;
 
-public partial class HomeViewModel : ObservableObject
+public partial class HomeViewModel(
+    TransactionService transactionService, 
+    IWalletNavigationService navigationService) : ObservableObject
 {
-    private readonly TransactionService _transactionService;
-    private readonly IWalletNavigationService _navigationService;
+    [ObservableProperty]
+    public partial decimal Balance { get; set; }
 
     [ObservableProperty]
-    private decimal _balance;
-
-    [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
     
     public ObservableCollection<Transaction> RecentTransactions { get; set; } = new();
-
-    public HomeViewModel(TransactionService transactionService, IWalletNavigationService navigationService)
-    {
-        _transactionService = transactionService;
-        _navigationService = navigationService;
-    }
 
     public async Task LoadDataAsync()
     {
         IsLoading = true;
 
-        var allTransactions = await _transactionService.GetAllTransactionsAsync();
+        var allTransactions = await transactionService.GetAllTransactionsAsync();
 
         decimal currentBalance = 0;
         foreach (var t in allTransactions)
@@ -54,12 +47,12 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private async Task AddIncomeAsync()
     {
-        await _navigationService.GoToAddTransactionAsync(true);
+        await navigationService.GoToAddTransactionAsync(true);
     }
 
     [RelayCommand]
     private async Task AddExpenseAsync()
     {
-        await _navigationService.GoToAddTransactionAsync(false);
+        await navigationService.GoToAddTransactionAsync(false);
     }
 }

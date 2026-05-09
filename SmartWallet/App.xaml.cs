@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Globalization;
 using SmartWallet.Views;
 
 namespace SmartWallet;
@@ -10,6 +10,11 @@ public partial class App : Application
     public App(IServiceProvider serviceProvider)
     {
         InitializeComponent();
+        
+        var culture = new CultureInfo("sk-SK");
+        CultureInfo.DefaultThreadCurrentCulture = culture;
+        CultureInfo.DefaultThreadCurrentUICulture = culture;
+        
         _serviceProvider = serviceProvider;
     }
 

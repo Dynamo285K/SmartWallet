@@ -6,7 +6,7 @@ namespace SmartWallet.Models.Entities;
 public class Transaction
 {
     [PrimaryKey, AutoIncrement]
-    public int Id { get; set; }
+    public int Id { get; init; }
 
     public decimal Amount { get; set; }
 

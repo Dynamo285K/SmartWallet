@@ -6,45 +6,35 @@ using SmartWallet.Models.Services;
 
 namespace SmartWallet.ViewModels;
 
-public partial class TransactionFormViewModel : ObservableObject, IQueryAttributable
+public partial class TransactionFormViewModel(
+    TransactionService transactionService,
+    IDialogService dialogService,
+    IWalletNavigationService navigationService) : ObservableObject, IQueryAttributable
 {
     private const string CustomCategoryOption = "➕ Add Custom...";
 
-    private readonly TransactionService _transactionService;
-    private readonly IDialogService _dialogService;
-    private readonly IWalletNavigationService _navigationService;
-
     private int? _editingTransactionId;
     private DateTime _originalDate = DateTime.Now;
+    
+    private string _categoryToSelectAfterLoad = string.Empty;
 
     [ObservableProperty]
-    private bool _isIncome;
+    public partial bool IsIncome { get; set; }
 
     [ObservableProperty]
-    private string _amount = string.Empty;
+    public partial string Amount { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string _selectedCategory = string.Empty;
+    public partial string SelectedCategory { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string _note = string.Empty;
+    public partial string Note { get; set; } = string.Empty;
 
     public ObservableCollection<string> Categories { get; } = new();
 
     public string TitleText => _editingTransactionId.HasValue 
         ? (IsIncome ? "Edit Income" : "Edit Expense") 
         : (IsIncome ? "New Income" : "New Expense");
-
-    public TransactionFormViewModel(
-        TransactionService transactionService,
-        IDialogService dialogService,
-        IWalletNavigationService navigationService)
-    {
-        _transactionService = transactionService;
-        _dialogService = dialogService;
-        _navigationService = navigationService;
-        LoadCategories();
-    }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
@@ -57,16 +47,10 @@ public partial class TransactionFormViewModel : ObservableObject, IQueryAttribut
             Amount = existingTransaction.Amount.ToString("0.##");
             Note = existingTransaction.Note;
             
-            LoadCategories();
-            
-            if (!Categories.Contains(existingTransaction.Category))
-            {
-                Categories.Insert(Categories.Count - 1, existingTransaction.Category);
-            }
-            SelectedCategory = existingTransaction.Category;
+            _categoryToSelectAfterLoad = existingTransaction.Category;
         }
         else if (query.TryGetValue("IsIncome", out var isIncomeValue) &&
-            bool.TryParse(isIncomeValue?.ToString(), out var isIncome))
+            bool.TryParse(isIncomeValue.ToString(), out var isIncome))
         {
             _editingTransactionId = null;
             _originalDate = DateTime.Now;
@@ -75,22 +59,20 @@ public partial class TransactionFormViewModel : ObservableObject, IQueryAttribut
             Amount = string.Empty;
             Note = string.Empty;
             
-            LoadCategories();
+            _categoryToSelectAfterLoad = string.Empty;
         }
         
         OnPropertyChanged(nameof(TitleText));
+
+        _ = LoadCategoriesAsync();
     }
 
     partial void OnIsIncomeChanged(bool value)
     {
         OnPropertyChanged(nameof(TitleText));
-        if (!_editingTransactionId.HasValue) 
-        {
-            LoadCategories();
-        }
     }
 
-    private void LoadCategories()
+    private async Task LoadCategoriesAsync()
     {
         Categories.Clear();
         SelectedCategory = string.Empty;
@@ -110,7 +92,29 @@ public partial class TransactionFormViewModel : ObservableObject, IQueryAttribut
             Categories.Add("Housing & Bills");
         }
         
+        var allTransactions = await transactionService.GetAllTransactionsAsync();
+
+        var usedCategories = allTransactions
+            .Where(t => t.IsIncome == IsIncome)
+            .Select(t => t.Category)
+            .Distinct()
+            .ToList();
+
+        foreach (var customCat in usedCategories.Where(c => !Categories.Contains(c) && !string.IsNullOrWhiteSpace(c)))
+        {
+            Categories.Add(customCat);
+        }
+
         Categories.Add(CustomCategoryOption);
+
+        if (!string.IsNullOrEmpty(_categoryToSelectAfterLoad) && Categories.Contains(_categoryToSelectAfterLoad))
+        {
+            SelectedCategory = _categoryToSelectAfterLoad;
+        }
+        else
+        {
+            SelectedCategory = Categories.FirstOrDefault() ?? string.Empty;
+        }
     }
 
     partial void OnSelectedCategoryChanged(string value)
@@ -123,7 +127,7 @@ public partial class TransactionFormViewModel : ObservableObject, IQueryAttribut
 
     private async Task AskForCustomCategoryAsync()
     {
-        string? newCategory = await _dialogService.ShowPromptAsync(
+        var newCategory = await dialogService.ShowPromptAsync(
             "New Category",
             "Enter the name of your custom category:");
 
@@ -140,19 +144,19 @@ public partial class TransactionFormViewModel : ObservableObject, IQueryAttribut
     [RelayCommand]
     private async Task SaveAsync()
     {
-        if (!decimal.TryParse(Amount, out decimal parsedAmount) || parsedAmount <= 0)
+        if (!decimal.TryParse(Amount, out var parsedAmount) || parsedAmount <= 0)
         {
-            await _dialogService.ShowAlertAsync("Error", "Enter a valid amount.");
+            await dialogService.ShowAlertAsync("Error", "Enter a valid amount.");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(SelectedCategory) || SelectedCategory == CustomCategoryOption)
         {
-            await _dialogService.ShowAlertAsync("Error", "Please select a valid category.");
+            await dialogService.ShowAlertAsync("Error", "Please select a valid category.");
             return;
         }
 
-        bool isConfirmed = await _dialogService.ShowConfirmationAsync(
+        var isConfirmed = await dialogService.ShowConfirmationAsync(
             "Confirmation", 
             $"Do you really want to save this transaction in the amount of {parsedAmount:C2}?", 
             "Yes, save", 
@@ -173,13 +177,13 @@ public partial class TransactionFormViewModel : ObservableObject, IQueryAttribut
 
         if (_editingTransactionId.HasValue)
         {
-            await _transactionService.UpdateTransactionAsync(transaction);
+            await transactionService.UpdateTransactionAsync(transaction);
         }
         else
         {
-            await _transactionService.AddTransactionAsync(transaction);
+            await transactionService.AddTransactionAsync(transaction);
         }
 
-        await _navigationService.GoBackAsync();
+        await navigationService.GoBackAsync();
     }
 }

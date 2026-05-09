@@ -1,47 +1,47 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
-using SmartWallet.Models;
 using SmartWallet.Models.Entities;
 using SmartWallet.Models.Services;
 
 namespace SmartWallet.ViewModels;
 
-public partial class StatisticsViewModel : ObservableObject
+public partial class StatisticsViewModel(TransactionService transactionService) : ObservableObject
 {
-    private readonly TransactionService _transactionService;
-
     private List<Transaction> _allTransactions = [];
 
     [ObservableProperty]
-    private decimal _totalIncome;
+    public partial decimal TotalIncome { get; set; }
 
     [ObservableProperty]
-    private decimal _totalExpense;
+    public partial decimal TotalExpense { get; set; }
 
     [ObservableProperty]
-    private decimal _netBalance;
+    public partial decimal NetBalance { get; set; }
 
     [ObservableProperty]
-    private bool _hasExpenses;
+    public partial bool HasIncome { get; set; }
+    
+    [ObservableProperty]
+    public partial bool HasExpenses { get; set; }
 
     [ObservableProperty]
-    private bool _isEmpty;
+    public partial bool IsExpenseEmpty { get; set; }
+    
+    [ObservableProperty]
+    public partial bool IsIncomeEmpty { get; set; }
 
     [ObservableProperty]
-    private string _selectedPeriod = string.Empty;
+    public partial string SelectedPeriod { get; set; } = string.Empty;
 
     public ObservableCollection<string> Periods { get; } = [];
     
     public ObservableCollection<ExpenseChartItem> ExpensesByCategory { get; } = [];
-
-    public StatisticsViewModel(TransactionService transactionService)
-    {
-        _transactionService = transactionService;
-    }
+    
+    public ObservableCollection<ExpenseChartItem> IncomeByCategory { get; } = [];
 
     public async Task LoadDataAsync()
     {
-        var data = await _transactionService.GetAllTransactionsAsync();
+        var data = await transactionService.GetAllTransactionsAsync();
         _allTransactions = data.ToList();
 
         PopulatePeriods();
@@ -89,15 +89,19 @@ public partial class StatisticsViewModel : ObservableObject
         if (string.IsNullOrEmpty(SelectedPeriod)) return;
 
         var currentMonthData = _allTransactions
-            .Where(t => new DateTime(t.Date.Year, t.Date.Month, 1).ToString("MMMM yyyy").ToUpper() == SelectedPeriod)
+            .Where(t => string.Equals(
+                new DateTime(t.Date.Year, t.Date.Month, 1).ToString("MMMM yyyy"), 
+                SelectedPeriod, 
+                StringComparison.OrdinalIgnoreCase))
             .ToList();
 
         TotalIncome = currentMonthData.Where(t => t.IsIncome).Sum(t => t.Amount);
         TotalExpense = currentMonthData.Where(t => !t.IsIncome).Sum(t => t.Amount);
         NetBalance = TotalIncome - TotalExpense;
-
+        
         ExpensesByCategory.Clear();
-
+        IncomeByCategory.Clear();
+        
         var expensesGrouped = currentMonthData
             .Where(t => !t.IsIncome)
             .GroupBy(t => t.Category)
@@ -110,7 +114,7 @@ public partial class StatisticsViewModel : ObservableObject
             .ToList();
 
         HasExpenses = expensesGrouped.Count > 0;
-        IsEmpty = !HasExpenses;
+        IsExpenseEmpty = !HasExpenses;
 
         foreach (var expense in expensesGrouped)
         {
@@ -118,6 +122,29 @@ public partial class StatisticsViewModel : ObservableObject
             {
                 Category = expense.Category,
                 Amount = (double)expense.Total
+            });
+        }
+        
+        var incomeGrouped = currentMonthData
+            .Where(t => t.IsIncome)
+            .GroupBy(t => t.Category)
+            .Select(g => new
+            {
+                Category = string.IsNullOrWhiteSpace(g.Key) ? "Uncategorized" : g.Key,
+                Total = g.Sum(t => t.Amount)
+            })
+            .OrderByDescending(income => income.Total)
+            .ToList();
+
+        HasIncome = incomeGrouped.Count > 0;
+        IsIncomeEmpty = !HasIncome;
+
+        foreach (var income in incomeGrouped)
+        {
+            IncomeByCategory.Add(new ExpenseChartItem
+            {
+                Category = income.Category,
+                Amount = (double)income.Total
             });
         }
     }

@@ -5,41 +5,32 @@ using SmartWallet.Models.Services;
 
 namespace SmartWallet.ViewModels;
 
-public partial class SettingsViewModel : ObservableObject
+public partial class SettingsViewModel(
+    TransactionService transactionService,
+    IDialogService dialogService,
+    IWalletNavigationService navigationService) : ObservableObject
 {
-    private readonly TransactionService _transactionService;
-    private readonly IDialogService _dialogService;
-    private readonly IWalletNavigationService _navigationService;
-
-    public SettingsViewModel(
-        TransactionService transactionService,
-        IDialogService dialogService,
-        IWalletNavigationService navigationService)
-    {
-        _transactionService = transactionService;
-        _dialogService = dialogService;
-        _navigationService = navigationService;
-    }
+    
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
     [RelayCommand]
     private async Task ChangePinAsync()
     {
-        await _navigationService.GoToChangePinAsync();
+        await navigationService.GoToChangePinAsync();
     }
 
     [RelayCommand]
     private async Task ExportToJsonAsync()
     {
-        var transactions = await _transactionService.GetAllTransactionsAsync();
+        var transactions = await transactionService.GetAllTransactionsAsync();
         
         if (transactions.Count == 0)
         {
-            await _dialogService.ShowAlertAsync("Export", "You have no transactions to export.");
+            await dialogService.ShowAlertAsync("Export", "You have no transactions to export.");
             return;
         }
-
-        var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
-        var jsonString = JsonSerializer.Serialize(transactions, jsonOptions);
+        
+        var jsonString = JsonSerializer.Serialize(transactions, JsonOptions);
 
         var fileName = $"SmartWallet_Export_{DateTime.Now:yyyyMMdd}.json";
         var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);

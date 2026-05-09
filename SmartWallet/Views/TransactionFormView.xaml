@@ -18,7 +18,7 @@
                 FontSize="18" />
 
         <Label Text="Notes" FontSize="16" FontAttributes="Bold" />
-        <Entry Text="{Binding Note}" Placeholder="napr. Nákup v Tescu..." />
+        <Entry Text="{Binding Note}" Placeholder="e.g. Weekly groceries..." />
 
         <Button Text="Save" 
                 Command="{Binding SaveCommand}" 

@@ -6,51 +6,39 @@ using SmartWallet.Models.Services;
 
 namespace SmartWallet.ViewModels;
 
-public partial class TransactionsViewModel : ObservableObject
+public partial class TransactionsViewModel(
+    TransactionService transactionService,
+    IDialogService dialogService,
+    IWalletNavigationService navigationService) : ObservableObject
 {
-    private readonly TransactionService _transactionService;
-    private readonly IDialogService _dialogService;
-    private readonly IWalletNavigationService _navigationService;
-
     [ObservableProperty]
-    private bool _isLoading;
+    public partial bool IsLoading { get; set; }
     
     [ObservableProperty]
-    private bool _isRefreshing;
+    public partial bool IsRefreshing { get; set; }
     
     private List<Transaction> _allTransactionsBackup = [];
     
     [ObservableProperty]
-    private string _searchText = string.Empty;
+    public partial string SearchText { get; set; } = string.Empty;
     
     [ObservableProperty]
-    private string _selectedCategory = "All Categories";
+    public partial string SelectedCategory { get; set; } = "All Categories";
 
     [ObservableProperty]
-    private string _selectedPeriod = "All Time";
+    public partial string SelectedPeriod { get; set; } = "All Time";
 
     public ObservableCollection<string> CategoriesFilter { get; } = ["All Categories"];
     public ObservableCollection<string> PeriodsFilter { get; } = ["All Time"];
     public ObservableCollection<TransactionGroup> GroupedTransactions { get; set; } = [];
-    
-    public TransactionsViewModel(
-        TransactionService transactionService,
-        IDialogService dialogService,
-        IWalletNavigationService navigationService)
-    {
-        _transactionService = transactionService;
-        _dialogService = dialogService;
-        _navigationService = navigationService;
-    }
 
     public async Task LoadTransactionsAsync()
     {
         IsLoading = true;
 
-        var data = await _transactionService.GetAllTransactionsAsync();
+        var data = await transactionService.GetAllTransactionsAsync();
         _allTransactionsBackup = data.ToList();
         
-        // TOTO TU CHÝBALO: Musíme naplniť roletky a aplikovať filtre pri načítaní
         PopulateFilters();
         ApplyFilters();
 
@@ -83,7 +71,6 @@ public partial class TransactionsViewModel : ObservableObject
         if (!PeriodsFilter.Contains(SelectedPeriod)) SelectedPeriod = "All Time";
     }
 
-    // Tieto tri riadky automaticky reagujú na zmenu v UI a zavolajú filter
     partial void OnSearchTextChanged(string value) => ApplyFilters();
     partial void OnSelectedCategoryChanged(string value) => ApplyFilters();
     partial void OnSelectedPeriodChanged(string value) => ApplyFilters();
@@ -132,30 +119,29 @@ public partial class TransactionsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task DeleteTransactionAsync(Transaction transaction)
+    private async Task DeleteTransactionAsync(Transaction? transaction)
     {
         if (transaction == null) return;
 
-        var isConfirmed = await _dialogService.ShowConfirmationAsync(
+        var isConfirmed = await dialogService.ShowConfirmationAsync(
             "Delete transaction?", 
             $"Do you really want to delete transaction '{transaction.Category}' with amount {transaction.Amount:C2}?", 
             "Delete", "Cancel");
 
         if (isConfirmed)
         {
-            await _transactionService.DeleteTransactionAsync(transaction);
+            await transactionService.DeleteTransactionAsync(transaction);
             _allTransactionsBackup.Remove(transaction);
             
-            // Namiesto starého volania OnSearchTextChanged teraz voláme univerzálny filter
             ApplyFilters();
         }
     }
 
     [RelayCommand]
-    private async Task EditTransactionAsync(Transaction transaction)
+    private async Task EditTransactionAsync(Transaction? transaction)
     {
         if (transaction == null) return;
 
-        await _navigationService.GoToEditTransactionAsync(transaction);
+        await navigationService.GoToEditTransactionAsync(transaction);
     }
 }

@@ -4,41 +4,34 @@ using SmartWallet.Models.Services;
 
 namespace SmartWallet.ViewModels;
 
-public partial class LoginViewModel : ObservableObject
+public partial class LoginViewModel(
+    AuthService authService, 
+    IAppNavigationService navigationService) : ObservableObject
 {
-    private readonly AuthService _authService;
-    private readonly IAppNavigationService _navigationService;
-
     private bool _isRegistering;
     private bool _isInitialized;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(PinDisplay))]
-    private string enteredPin = string.Empty;
+    public partial string EnteredPin { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string errorMessage = string.Empty;
+    public partial string ErrorMessage { get; set; } = string.Empty;
 
     [ObservableProperty]
-    private string titleText = "Loading...";
+    public partial string TitleText { get; set; } = "Loading...";
 
     [ObservableProperty]
-    private bool isBusy = true;
+    public partial bool IsBusy { get; set; } = true;
 
     public string PinDisplay
     {
         get
         {
-            string filled = new string('⬤', EnteredPin.Length);
-            string empty = new string('○', 6 - EnteredPin.Length);
+            var filled = new string('⬤', EnteredPin.Length);
+            var empty = new string('○', 6 - EnteredPin.Length);
             return string.Join(" ", (filled + empty).ToCharArray());
         }
-    }
-
-    public LoginViewModel(AuthService authService, IAppNavigationService navigationService)
-    {
-        _authService = authService;
-        _navigationService = navigationService;
     }
 
     public async Task InitializeAsync()
@@ -51,7 +44,7 @@ public partial class LoginViewModel : ObservableObject
 
         try
         {
-            var hasPin = await _authService.HasPinSetupAsync();
+            var hasPin = await authService.HasPinSetupAsync();
             _isRegistering = !hasPin;
 
             TitleText = _isRegistering
@@ -113,16 +106,16 @@ public partial class LoginViewModel : ObservableObject
         {
             if (_isRegistering)
             {
-                await _authService.SetPinAsync(EnteredPin);
-                _navigationService.ShowMainApp();
+                await authService.SetPinAsync(EnteredPin);
+                navigationService.ShowMainApp();
                 return;
             }
 
-            var isSuccess = await _authService.VerifyPinAsync(EnteredPin);
+            var isSuccess = await authService.VerifyPinAsync(EnteredPin);
 
             if (isSuccess)
             {
-                _navigationService.ShowMainApp();
+                navigationService.ShowMainApp();
                 return;
             }
 

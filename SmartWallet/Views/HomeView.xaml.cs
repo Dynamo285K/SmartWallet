@@ -2,7 +2,7 @@ using SmartWallet.ViewModels;
 
 namespace SmartWallet.Views;
 
-public partial class HomeView : ContentPage
+public partial class HomeView
 {
     private readonly HomeViewModel _viewModel;
 
@@ -12,9 +12,23 @@ public partial class HomeView : ContentPage
         BindingContext = _viewModel = viewModel;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadDataAsync();
+        _ = LoadDataOnAppearingAsync();
     }
+
+    private async Task LoadDataOnAppearingAsync()
+    {
+        try
+        {
+            await _viewModel.LoadDataAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            await DisplayAlertAsync("Error", "An error occurred while loading the data", "OK");
+        }
+    }
+    
 }

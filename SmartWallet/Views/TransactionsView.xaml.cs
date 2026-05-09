@@ -2,7 +2,7 @@ using SmartWallet.ViewModels;
 
 namespace SmartWallet.Views;
 
-public partial class TransactionsView : ContentPage
+public partial class TransactionsView
 {
     private readonly TransactionsViewModel _viewModel;
 
@@ -12,9 +12,22 @@ public partial class TransactionsView : ContentPage
         BindingContext = _viewModel = viewModel;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadTransactionsAsync();
+        _ = LoadTransactionsAsync();
+    }
+
+    private async Task LoadTransactionsAsync()
+    {
+        try
+        {
+            await _viewModel.LoadTransactionsAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            await DisplayAlertAsync("Error", "Unable to load transactions.", "OK");
+        }
     }
 }
