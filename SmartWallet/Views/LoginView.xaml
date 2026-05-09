@@ -16,6 +16,15 @@
             <Setter Property="TextColor" Value="Black" />
             <Setter Property="FontAttributes" Value="Bold" />
         </Style>
+
+        <Style x:Key="PinDot" TargetType="Border">
+            <Setter Property="WidthRequest" Value="20" />
+            <Setter Property="HeightRequest" Value="20" />
+            <Setter Property="Stroke" Value="#555555" />
+            <Setter Property="StrokeThickness" Value="1.4" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+        </Style>
     </ContentPage.Resources>
 
     <VerticalStackLayout Spacing="30"
@@ -32,11 +41,61 @@
                            IsVisible="{Binding IsBusy}"
                            HorizontalOptions="Center" />
 
-        <Label Text="{Binding PinDisplay}"
-               FontSize="24"
-               TextColor="#333333"
-               CharacterSpacing="2"
-               HorizontalOptions="Center" />
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="14">
+            <Border Style="{StaticResource PinDot}">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsPinDot1Filled}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#333333" />
+                        <Setter Property="Stroke" Value="#333333" />
+                    </DataTrigger>
+                </Border.Triggers>
+            </Border>
+
+            <Border Style="{StaticResource PinDot}">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsPinDot2Filled}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#333333" />
+                        <Setter Property="Stroke" Value="#333333" />
+                    </DataTrigger>
+                </Border.Triggers>
+            </Border>
+
+            <Border Style="{StaticResource PinDot}">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsPinDot3Filled}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#333333" />
+                        <Setter Property="Stroke" Value="#333333" />
+                    </DataTrigger>
+                </Border.Triggers>
+            </Border>
+
+            <Border Style="{StaticResource PinDot}">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsPinDot4Filled}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#333333" />
+                        <Setter Property="Stroke" Value="#333333" />
+                    </DataTrigger>
+                </Border.Triggers>
+            </Border>
+
+            <Border Style="{StaticResource PinDot}">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsPinDot5Filled}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#333333" />
+                        <Setter Property="Stroke" Value="#333333" />
+                    </DataTrigger>
+                </Border.Triggers>
+            </Border>
+
+            <Border Style="{StaticResource PinDot}">
+                <Border.Triggers>
+                    <DataTrigger TargetType="Border" Binding="{Binding IsPinDot6Filled}" Value="True">
+                        <Setter Property="BackgroundColor" Value="#333333" />
+                        <Setter Property="Stroke" Value="#333333" />
+                    </DataTrigger>
+                </Border.Triggers>
+            </Border>
+        </HorizontalStackLayout>
 
         <Label Text="{Binding ErrorMessage}"
                TextColor="Red"

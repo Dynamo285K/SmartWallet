@@ -12,7 +12,12 @@ public partial class LoginViewModel(
     private bool _isInitialized;
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(PinDisplay))]
+    [NotifyPropertyChangedFor(nameof(IsPinDot1Filled))]
+    [NotifyPropertyChangedFor(nameof(IsPinDot2Filled))]
+    [NotifyPropertyChangedFor(nameof(IsPinDot3Filled))]
+    [NotifyPropertyChangedFor(nameof(IsPinDot4Filled))]
+    [NotifyPropertyChangedFor(nameof(IsPinDot5Filled))]
+    [NotifyPropertyChangedFor(nameof(IsPinDot6Filled))]
     public partial string EnteredPin { get; set; } = string.Empty;
 
     [ObservableProperty]
@@ -24,15 +29,12 @@ public partial class LoginViewModel(
     [ObservableProperty]
     public partial bool IsBusy { get; set; } = true;
 
-    public string PinDisplay
-    {
-        get
-        {
-            var filled = new string('⬤', EnteredPin.Length);
-            var empty = new string('○', 6 - EnteredPin.Length);
-            return string.Join(" ", (filled + empty).ToCharArray());
-        }
-    }
+    public bool IsPinDot1Filled => EnteredPin.Length >= 1;
+    public bool IsPinDot2Filled => EnteredPin.Length >= 2;
+    public bool IsPinDot3Filled => EnteredPin.Length >= 3;
+    public bool IsPinDot4Filled => EnteredPin.Length >= 4;
+    public bool IsPinDot5Filled => EnteredPin.Length >= 5;
+    public bool IsPinDot6Filled => EnteredPin.Length >= 6;
 
     public async Task InitializeAsync()
     {
