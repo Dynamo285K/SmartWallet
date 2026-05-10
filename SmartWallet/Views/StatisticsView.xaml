@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:chart="clr-namespace:Syncfusion.Maui.Toolkit.Charts;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              xmlns:viewmodels="clr-namespace:SmartWallet.ViewModels"
              x:DataType="viewmodels:StatisticsViewModel"
              x:Class="SmartWallet.Views.StatisticsView"
@@ -9,15 +9,15 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
-            
-            <Border Stroke="LightGray" 
-                    StrokeShape="RoundRectangle 10" 
-                    BackgroundColor="White" 
-                    Padding="15,0" 
-                    HeightRequest="45" 
+
+            <Border Stroke="LightGray"
+                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="White"
+                    Padding="15,0"
+                    HeightRequest="45"
                     HorizontalOptions="Center"
                     MinimumWidthRequest="200">
-                
+
                 <Picker ItemsSource="{Binding Periods}"
                         SelectedItem="{Binding SelectedPeriod}"
                         Title="Select period"
@@ -49,85 +49,39 @@
                     <Label Text="{Binding NetBalance, StringFormat='{0:C2}'}" TextColor="#9C27B0" FontSize="20" FontAttributes="Bold" />
                 </HorizontalStackLayout>
             </Border>
-            
+
             <Label Text="Expenses by Category" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
-            
-            <Border Stroke="LightGray"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="White"
-                    Padding="10">
 
-                <Grid>
-                    <Grid HeightRequest="300" IsVisible="{Binding HasExpenses}">
-                        <chart:SfCircularChart>
-                            <chart:SfCircularChart.Legend>
-                                <chart:ChartLegend Placement="Bottom" />
-                            </chart:SfCircularChart.Legend>
+            <Grid Margin="-20,0" IsVisible="{Binding HasExpenses}">
+                <lvc:PieChart Series="{Binding ExpenseSeries}"
+                              HeightRequest="380"
+                              LegendPosition="Bottom"
+                              BackgroundColor="White" />
+            </Grid>
 
-                            <chart:PieSeries
-                                ItemsSource="{Binding ExpensesByCategory}"
-                                XBindingPath="Category"
-                                YBindingPath="Amount"
-                                ShowDataLabels="True"
-                                EnableTooltip="True" />
-                        </chart:SfCircularChart>
-                    </Grid>
-
-                    <VerticalStackLayout HeightRequest="300"
-                                         IsVisible="{Binding IsExpenseEmpty}"
-                                         VerticalOptions="Center"
-                                         HorizontalOptions="Center"
-                                         Spacing="15">
-
-                        <Label Text="No expenses this period"
-                               FontSize="18"
-                               TextColor="Gray"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center" />
-                    </VerticalStackLayout>
-                </Grid>
-            </Border>
+            <Label Text="No expenses this period"
+                   FontSize="18"
+                   TextColor="Gray"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   IsVisible="{Binding IsExpenseEmpty}" />
 
             <Label Text="Income by Category" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
-            
-            <Border Stroke="LightGray"
-                    StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10"
-                    BackgroundColor="White"
-                    Padding="10"
-                    Margin="0,0,0,30">
 
-                <Grid>
-                    <Grid HeightRequest="300" IsVisible="{Binding HasIncome}">
-                        <chart:SfCircularChart>
-                            <chart:SfCircularChart.Legend>
-                                <chart:ChartLegend Placement="Bottom" />
-                            </chart:SfCircularChart.Legend>
+            <Grid Margin="-20,0,-20,30" IsVisible="{Binding HasIncome}">
+                <lvc:PieChart Series="{Binding IncomeSeries}"
+                              HeightRequest="380"
+                              LegendPosition="Bottom"
+                              BackgroundColor="White" />
+            </Grid>
 
-                            <chart:PieSeries
-                                ItemsSource="{Binding IncomeByCategory}"
-                                XBindingPath="Category"
-                                YBindingPath="Amount"
-                                ShowDataLabels="True"
-                                EnableTooltip="True" />
-                        </chart:SfCircularChart>
-                    </Grid>
-
-                    <VerticalStackLayout HeightRequest="300"
-                                         IsVisible="{Binding IsIncomeEmpty}" 
-                                         VerticalOptions="Center" 
-                                         HorizontalOptions="Center" 
-                                         Spacing="15">
-                        
-                        <Label Text="No income this period" 
-                               FontSize="18" 
-                               TextColor="Gray" 
-                               FontAttributes="Bold" 
-                               HorizontalOptions="Center" />
-                    </VerticalStackLayout>
-                </Grid>
-            </Border>
+            <Label Text="No income this period"
+                   FontSize="18"
+                   TextColor="Gray"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   IsVisible="{Binding IsIncomeEmpty}"
+                   Margin="0,0,0,30" />
 
         </VerticalStackLayout>
     </ScrollView>

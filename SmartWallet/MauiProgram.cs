@@ -2,7 +2,8 @@
 using SmartWallet.Models.Services;
 using SmartWallet.ViewModels;
 using SmartWallet.Views;
-using Syncfusion.Maui.Toolkit.Hosting;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using LiveChartsCore.SkiaSharpView.Maui;
 
 namespace SmartWallet;
 
@@ -12,8 +13,9 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .ConfigureSyncfusionToolkit()
             .UseMauiApp<App>()
+            .UseSkiaSharp()
+            .UseLiveCharts()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

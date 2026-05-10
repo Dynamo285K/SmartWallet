@@ -1,5 +1,10 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using LiveChartsCore;
+using LiveChartsCore.Measure;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using SkiaSharp;
 using SmartWallet.Models.Entities;
 using SmartWallet.Models.Services;
 
@@ -22,24 +27,26 @@ public partial class StatisticsViewModel(
 
     [ObservableProperty]
     public partial bool HasIncome { get; set; }
-    
+
     [ObservableProperty]
     public partial bool HasExpenses { get; set; }
 
     [ObservableProperty]
     public partial bool IsExpenseEmpty { get; set; }
-    
+
     [ObservableProperty]
     public partial bool IsIncomeEmpty { get; set; }
 
     [ObservableProperty]
     public partial string SelectedPeriod { get; set; } = string.Empty;
 
+    [ObservableProperty]
+    public partial IEnumerable<ISeries> ExpenseSeries { get; set; } = [];
+
+    [ObservableProperty]
+    public partial IEnumerable<ISeries> IncomeSeries { get; set; } = [];
+
     public ObservableCollection<string> Periods { get; } = [];
-    
-    public ObservableCollection<ExpenseChartItem> ExpensesByCategory { get; } = [];
-    
-    public ObservableCollection<ExpenseChartItem> IncomeByCategory { get; } = [];
 
     public async Task LoadDataAsync()
     {
@@ -60,7 +67,7 @@ public partial class StatisticsViewModel(
     private void PopulatePeriods()
     {
         Periods.Clear();
-        
+
         var uniquePeriods = _allTransactions
             .Select(t => new DateTime(t.Date.Year, t.Date.Month, 1))
             .Distinct()
@@ -70,19 +77,13 @@ public partial class StatisticsViewModel(
 
         var currentMonthStr = DateTime.Now.ToString("MMMM yyyy").ToUpper();
         if (!uniquePeriods.Contains(currentMonthStr))
-        {
             uniquePeriods.Insert(0, currentMonthStr);
-        }
 
         foreach (var p in uniquePeriods)
-        {
             Periods.Add(p);
-        }
 
         if (string.IsNullOrEmpty(SelectedPeriod) || !Periods.Contains(SelectedPeriod))
-        {
             SelectedPeriod = currentMonthStr;
-        }
 
         UpdateStatistics();
     }
@@ -98,18 +99,15 @@ public partial class StatisticsViewModel(
 
         var currentMonthData = _allTransactions
             .Where(t => string.Equals(
-                new DateTime(t.Date.Year, t.Date.Month, 1).ToString("MMMM yyyy"), 
-                SelectedPeriod, 
+                new DateTime(t.Date.Year, t.Date.Month, 1).ToString("MMMM yyyy"),
+                SelectedPeriod,
                 StringComparison.OrdinalIgnoreCase))
             .ToList();
 
         TotalIncome = currentMonthData.Where(t => t.IsIncome).Sum(t => t.Amount);
         TotalExpense = currentMonthData.Where(t => !t.IsIncome).Sum(t => t.Amount);
         NetBalance = TotalIncome - TotalExpense;
-        
-        ExpensesByCategory.Clear();
-        IncomeByCategory.Clear();
-        
+
         var expensesGrouped = currentMonthData
             .Where(t => !t.IsIncome)
             .GroupBy(t => t.Category)
@@ -118,21 +116,23 @@ public partial class StatisticsViewModel(
                 Category = string.IsNullOrWhiteSpace(g.Key) ? "Uncategorized" : g.Key,
                 Total = g.Sum(t => t.Amount)
             })
-            .OrderByDescending(expense => expense.Total)
+            .OrderByDescending(e => e.Total)
             .ToList();
 
         HasExpenses = expensesGrouped.Count > 0;
         IsExpenseEmpty = !HasExpenses;
 
-        foreach (var expense in expensesGrouped)
+        ExpenseSeries = expensesGrouped.Select(e => new PieSeries<double>
         {
-            ExpensesByCategory.Add(new ExpenseChartItem
-            {
-                Category = $"{expense.Category} (€{expense.Total:0.##})",
-                Amount = (double)expense.Total
-            });
-        }
-        
+            Values = [(double)e.Total],
+            Name = e.Category,
+            DataLabelsPaint = new SolidColorPaint(SKColors.White),
+            DataLabelsSize = 14,
+            DataLabelsPosition = PolarLabelsPosition.Middle,
+            DataLabelsFormatter = p => $"€{p.Coordinate.PrimaryValue:0.##}",
+            ToolTipLabelFormatter = p => $"{e.Category}: €{p.Coordinate.PrimaryValue:0.##}"
+        }).ToList();
+
         var incomeGrouped = currentMonthData
             .Where(t => t.IsIncome)
             .GroupBy(t => t.Category)
@@ -141,19 +141,21 @@ public partial class StatisticsViewModel(
                 Category = string.IsNullOrWhiteSpace(g.Key) ? "Uncategorized" : g.Key,
                 Total = g.Sum(t => t.Amount)
             })
-            .OrderByDescending(income => income.Total)
+            .OrderByDescending(i => i.Total)
             .ToList();
 
         HasIncome = incomeGrouped.Count > 0;
         IsIncomeEmpty = !HasIncome;
 
-        foreach (var income in incomeGrouped)
+        IncomeSeries = incomeGrouped.Select(i => new PieSeries<double>
         {
-            IncomeByCategory.Add(new ExpenseChartItem
-            {
-                Category = $"{income.Category} (€{income.Total:0.##})",
-                Amount = (double)income.Total
-            });
-        }
+            Values = [(double)i.Total],
+            Name = i.Category,
+            DataLabelsPaint = new SolidColorPaint(SKColors.White),
+            DataLabelsSize = 14,
+            DataLabelsPosition = PolarLabelsPosition.Middle,
+            DataLabelsFormatter = p => $"€{p.Coordinate.PrimaryValue:0.##}",
+            ToolTipLabelFormatter = p => $"{i.Category}: €{p.Coordinate.PrimaryValue:0.##}"
+        }).ToList();
     }
 }
