@@ -15,20 +15,7 @@ public partial class HomeView
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        _ = LoadDataOnAppearingAsync();
-    }
-
-    private async Task LoadDataOnAppearingAsync()
-    {
-        try
-        {
-            await _viewModel.LoadDataAsync();
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex);
-            await DisplayAlertAsync("Error", "An error occurred while loading the data", "OK");
-        }
+        _ = _viewModel.LoadDataAsync();
     }
     
 }

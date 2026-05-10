@@ -35,22 +35,37 @@ public partial class TransactionsViewModel(
     public async Task LoadTransactionsAsync()
     {
         IsLoading = true;
-
-        var data = await transactionService.GetAllTransactionsAsync();
-        _allTransactionsBackup = data.ToList();
-        
-        PopulateFilters();
-        ApplyFilters();
-
-        IsLoading = false;
+        try
+        {
+            var data = await transactionService.GetAllTransactionsAsync();
+            _allTransactionsBackup = data.ToList();
+            
+            PopulateFilters();
+            ApplyFilters();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            await dialogService.ShowAlertAsync("Error", "Unable to load transactions.");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     [RelayCommand]
     private async Task RefreshTransactionsAsync()
     {
         IsRefreshing = true;
-        await LoadTransactionsAsync();
-        IsRefreshing = false;
+        try
+        {
+            await LoadTransactionsAsync();
+        }
+        finally
+        {
+            IsRefreshing = false;
+        }
     }
     
     private void PopulateFilters()
@@ -71,9 +86,9 @@ public partial class TransactionsViewModel(
         if (!PeriodsFilter.Contains(SelectedPeriod)) SelectedPeriod = "All Time";
     }
 
-    partial void OnSearchTextChanged(string value) => ApplyFilters();
-    partial void OnSelectedCategoryChanged(string value) => ApplyFilters();
-    partial void OnSelectedPeriodChanged(string value) => ApplyFilters();
+    partial void OnSearchTextChanged(string _) => ApplyFilters();
+    partial void OnSelectedCategoryChanged(string _) => ApplyFilters();
+    partial void OnSelectedPeriodChanged(string _) => ApplyFilters();
 
     private void ApplyFilters()
     {
@@ -131,7 +146,7 @@ public partial class TransactionsViewModel(
         if (isConfirmed)
         {
             await transactionService.DeleteTransactionAsync(transaction);
-            _allTransactionsBackup.Remove(transaction);
+            _allTransactionsBackup.RemoveAll(t => t.Id == transaction.Id);
             
             ApplyFilters();
         }

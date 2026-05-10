@@ -9,14 +9,14 @@
 
     <Grid RowDefinitions="Auto, Auto, *" Padding="20">
 
-        <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="5" Margin="0, 20, 0, 30">
+        <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center" Spacing="5" Margin="0,20,0,30">
             <Label Text="Current balance" FontSize="16" TextColor="Gray" HorizontalOptions="Center" />
             <Label Text="{Binding Balance, StringFormat='{0:C2}'}" FontSize="42" FontAttributes="Bold" HorizontalOptions="Center" />
         </VerticalStackLayout>
 
         <Grid Grid.Row="1" ColumnDefinitions="*, *" ColumnSpacing="15" Margin="0,0,0,30">
-            <Button Grid.Column="0" Text="+ Add Income" BackgroundColor="#4CAF50" CornerRadius="10" FontAttributes="Bold" Command="{Binding AddIncomeCommand}" />
-            <Button Grid.Column="1" Text="- Add Expense" BackgroundColor="#F44336" CornerRadius="10" FontAttributes="Bold" Command="{Binding AddExpenseCommand}" />
+            <Button Grid.Column="0" Text="+ Add Income" BackgroundColor="{StaticResource IncomeGreen}" CornerRadius="10" FontAttributes="Bold" Command="{Binding AddIncomeCommand}" />
+            <Button Grid.Column="1" Text="- Add Expense" BackgroundColor="{StaticResource ExpenseRed}" CornerRadius="10" FontAttributes="Bold" Command="{Binding AddExpenseCommand}" />
         </Grid>
 
         <VerticalStackLayout Grid.Row="2" Spacing="10">
@@ -39,7 +39,7 @@
                                     
                                     <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="-"
-                                               TextColor="#F44336"
+                                               TextColor="{StaticResource ExpenseRed}"
                                                FontSize="16"
                                                FontAttributes="Bold">
                                             <Label.Triggers>
@@ -47,20 +47,20 @@
                                                              Binding="{Binding IsIncome}"
                                                              Value="True">
                                                     <Setter Property="Text" Value="+" />
-                                                    <Setter Property="TextColor" Value="#4CAF50" />
+                                                    <Setter Property="TextColor" Value="{StaticResource IncomeGreen}" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
 
                                         <Label Text="{Binding Amount, StringFormat='{0:C2}'}"
-                                               TextColor="#F44336"
+                                               TextColor="{StaticResource ExpenseRed}"
                                                FontSize="16"
                                                FontAttributes="Bold">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label"
                                                              Binding="{Binding IsIncome}"
                                                              Value="True">
-                                                    <Setter Property="TextColor" Value="#4CAF50" />
+                                                    <Setter Property="TextColor" Value="{StaticResource IncomeGreen}" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>

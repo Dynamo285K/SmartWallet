@@ -5,7 +5,9 @@ using SmartWallet.Models.Services;
 
 namespace SmartWallet.ViewModels;
 
-public partial class StatisticsViewModel(TransactionService transactionService) : ObservableObject
+public partial class StatisticsViewModel(
+    TransactionService transactionService,
+    IDialogService dialogService) : ObservableObject
 {
     private List<Transaction> _allTransactions = [];
 
@@ -41,10 +43,18 @@ public partial class StatisticsViewModel(TransactionService transactionService) 
 
     public async Task LoadDataAsync()
     {
-        var data = await transactionService.GetAllTransactionsAsync();
-        _allTransactions = data.ToList();
+        try
+        {
+            var data = await transactionService.GetAllTransactionsAsync();
+            _allTransactions = data.ToList();
 
-        PopulatePeriods();
+            PopulatePeriods();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            await dialogService.ShowAlertAsync("Error", "Unable to load statistics.");
+        }
     }
 
     private void PopulatePeriods()
@@ -71,15 +81,13 @@ public partial class StatisticsViewModel(TransactionService transactionService) 
 
         if (string.IsNullOrEmpty(SelectedPeriod) || !Periods.Contains(SelectedPeriod))
         {
-            SelectedPeriod = currentMonthStr; 
+            SelectedPeriod = currentMonthStr;
         }
-        else 
-        {
-            UpdateStatistics();
-        }
+
+        UpdateStatistics();
     }
 
-    partial void OnSelectedPeriodChanged(string value)
+    partial void OnSelectedPeriodChanged(string _)
     {
         UpdateStatistics();
     }
@@ -120,7 +128,7 @@ public partial class StatisticsViewModel(TransactionService transactionService) 
         {
             ExpensesByCategory.Add(new ExpenseChartItem
             {
-                Category = expense.Category,
+                Category = $"{expense.Category} (€{expense.Total:0.##})",
                 Amount = (double)expense.Total
             });
         }
@@ -143,7 +151,7 @@ public partial class StatisticsViewModel(TransactionService transactionService) 
         {
             IncomeByCategory.Add(new ExpenseChartItem
             {
-                Category = income.Category,
+                Category = $"{income.Category} (€{income.Total:0.##})",
                 Amount = (double)income.Total
             });
         }

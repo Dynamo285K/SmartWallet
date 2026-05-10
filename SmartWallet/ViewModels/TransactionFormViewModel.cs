@@ -11,7 +11,7 @@ public partial class TransactionFormViewModel(
     IDialogService dialogService,
     IWalletNavigationService navigationService) : ObservableObject, IQueryAttributable
 {
-    private const string CustomCategoryOption = "➕ Add Custom...";
+    private const string CustomCategoryOption = "Add Custom...";
 
     private int? _editingTransactionId;
     private DateTime _originalDate = DateTime.Now;
@@ -61,10 +61,10 @@ public partial class TransactionFormViewModel(
             
             _categoryToSelectAfterLoad = string.Empty;
         }
-        
+
         OnPropertyChanged(nameof(TitleText));
 
-        _ = LoadCategoriesAsync();
+        _ = LoadCategoriesSafelyAsync();
     }
 
     partial void OnIsIncomeChanged(bool value)
@@ -117,11 +117,24 @@ public partial class TransactionFormViewModel(
         }
     }
 
+    private async Task LoadCategoriesSafelyAsync()
+    {
+        try
+        {
+            await LoadCategoriesAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            await dialogService.ShowAlertAsync("Error", "Unable to load categories.");
+        }
+    }
+
     partial void OnSelectedCategoryChanged(string value)
     {
         if (value == CustomCategoryOption)
         {
-            _ = AskForCustomCategoryAsync();
+            _ = AskForCustomCategorySafelyAsync();
         }
     }
 
@@ -139,6 +152,20 @@ public partial class TransactionFormViewModel(
         }
 
         SelectedCategory = Categories.FirstOrDefault() ?? string.Empty;
+    }
+
+    private async Task AskForCustomCategorySafelyAsync()
+    {
+        try
+        {
+            await AskForCustomCategoryAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            await dialogService.ShowAlertAsync("Error", "Unable to add custom category.");
+            SelectedCategory = Categories.FirstOrDefault() ?? string.Empty;
+        }
     }
 
     [RelayCommand]

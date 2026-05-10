@@ -15,20 +15,7 @@ public partial class StatisticsView
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        _ = LoadDataOnAppearingAsync();
-    }
-
-    private async Task LoadDataOnAppearingAsync()
-    {
-        try
-        {
-            await _viewModel.LoadDataAsync();
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex);
-            await DisplayAlertAsync("Error", "Unable to load statistics.", "OK");
-        }
+        _ = _viewModel.LoadDataAsync();
     }
 
 }

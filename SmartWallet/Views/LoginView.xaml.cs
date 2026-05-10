@@ -16,19 +16,6 @@ public partial class LoginView
     {
         base.OnAppearing();
         
-        _ = InitializeOnAppearingAsync();
-    }
-
-    private async Task InitializeOnAppearingAsync()
-    {
-        try
-        {
-            await _viewModel.InitializeAsync();
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex);
-            await DisplayAlertAsync("Error", "Unable to initialize login.", "OK");
-        }
+        _ = _viewModel.InitializeAsync();
     }
 }

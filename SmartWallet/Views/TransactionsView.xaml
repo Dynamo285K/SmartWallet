@@ -123,7 +123,7 @@
                                     <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=DeleteTransactionCommand}"
                                                    CommandParameter="{Binding .}">
                                         
-                                        <Border BackgroundColor="#F44336" 
+                                        <Border BackgroundColor="{StaticResource ExpenseRed}" 
                                                 StrokeShape="RoundRectangle 10"
                                                 StrokeThickness="0"
                                                 WidthRequest="70"
@@ -153,18 +153,18 @@
                                     </VerticalStackLayout>
 
                                     <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                        <Label Text="-" TextColor="#F44336" FontSize="16" FontAttributes="Bold">
+                                        <Label Text="-" TextColor="{StaticResource ExpenseRed}" FontSize="16" FontAttributes="Bold">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsIncome}" Value="True">
                                                     <Setter Property="Text" Value="+" />
-                                                    <Setter Property="TextColor" Value="#4CAF50" />
+                                                    <Setter Property="TextColor" Value="{StaticResource IncomeGreen}" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
-                                        <Label Text="{Binding Amount, StringFormat='{0:C2}'}" TextColor="#F44336" FontSize="16" FontAttributes="Bold">
+                                        <Label Text="{Binding Amount, StringFormat='{0:C2}'}" TextColor="{StaticResource ExpenseRed}" FontSize="16" FontAttributes="Bold">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsIncome}" Value="True">
-                                                    <Setter Property="TextColor" Value="#4CAF50" />
+                                                    <Setter Property="TextColor" Value="{StaticResource IncomeGreen}" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>

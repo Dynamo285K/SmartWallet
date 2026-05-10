@@ -15,19 +15,6 @@ public partial class TransactionsView
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        _ = LoadTransactionsAsync();
-    }
-
-    private async Task LoadTransactionsAsync()
-    {
-        try
-        {
-            await _viewModel.LoadTransactionsAsync();
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine(ex);
-            await DisplayAlertAsync("Error", "Unable to load transactions.", "OK");
-        }
+        _ = _viewModel.LoadTransactionsAsync();
     }
 }

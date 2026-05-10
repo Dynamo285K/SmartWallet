@@ -8,6 +8,9 @@ public class Transaction
     [PrimaryKey, AutoIncrement]
     public int Id { get; init; }
 
+    [Indexed]
+    public int UserId { get; set; }
+
     public decimal Amount { get; set; }
 
     public bool IsIncome { get; set; }

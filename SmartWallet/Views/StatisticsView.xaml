@@ -32,13 +32,13 @@
                 <Border Grid.Column="0" StrokeShape="RoundRectangle 10" BackgroundColor="#E8F5E9" Padding="15">
                     <VerticalStackLayout>
                         <Label Text="Income" TextColor="Gray" FontSize="14" />
-                        <Label Text="{Binding TotalIncome, StringFormat='{0:C2}'}" TextColor="#4CAF50" FontSize="18" FontAttributes="Bold" />
+                        <Label Text="{Binding TotalIncome, StringFormat='{0:C2}'}" TextColor="{StaticResource IncomeGreen}" FontSize="18" FontAttributes="Bold" />
                     </VerticalStackLayout>
                 </Border>
                 <Border Grid.Column="1" StrokeShape="RoundRectangle 10" BackgroundColor="#FFEBEE" Padding="15">
                     <VerticalStackLayout>
                         <Label Text="Expenses" TextColor="Gray" FontSize="14" />
-                        <Label Text="{Binding TotalExpense, StringFormat='{0:C2}'}" TextColor="#F44336" FontSize="18" FontAttributes="Bold" />
+                        <Label Text="{Binding TotalExpense, StringFormat='{0:C2}'}" TextColor="{StaticResource ExpenseRed}" FontSize="18" FontAttributes="Bold" />
                     </VerticalStackLayout>
                 </Border>
             </Grid>
@@ -52,17 +52,17 @@
             
             <Label Text="Expenses by Category" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
             
-            <Border Stroke="LightGray" 
+            <Border Stroke="LightGray"
                     StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10" 
-                    BackgroundColor="White" 
+                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="White"
                     Padding="10">
-                
+
                 <Grid>
                     <Grid HeightRequest="300" IsVisible="{Binding HasExpenses}">
                         <chart:SfCircularChart>
                             <chart:SfCircularChart.Legend>
-                                <chart:ChartLegend />
+                                <chart:ChartLegend Placement="Bottom" />
                             </chart:SfCircularChart.Legend>
 
                             <chart:PieSeries
@@ -74,16 +74,16 @@
                         </chart:SfCircularChart>
                     </Grid>
 
-                    <VerticalStackLayout HeightRequest="300" 
-                                         IsVisible="{Binding IsExpenseEmpty}" 
-                                         VerticalOptions="Center" 
-                                         HorizontalOptions="Center" 
+                    <VerticalStackLayout HeightRequest="300"
+                                         IsVisible="{Binding IsExpenseEmpty}"
+                                         VerticalOptions="Center"
+                                         HorizontalOptions="Center"
                                          Spacing="15">
-                        
-                        <Label Text="No expenses this period" 
-                               FontSize="18" 
-                               TextColor="Gray" 
-                               FontAttributes="Bold" 
+
+                        <Label Text="No expenses this period"
+                               FontSize="18"
+                               TextColor="Gray"
+                               FontAttributes="Bold"
                                HorizontalOptions="Center" />
                     </VerticalStackLayout>
                 </Grid>
@@ -91,18 +91,18 @@
 
             <Label Text="Income by Category" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
             
-            <Border Stroke="LightGray" 
+            <Border Stroke="LightGray"
                     StrokeThickness="1"
-                    StrokeShape="RoundRectangle 10" 
-                    BackgroundColor="White" 
+                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="White"
                     Padding="10"
                     Margin="0,0,0,30">
-                
+
                 <Grid>
                     <Grid HeightRequest="300" IsVisible="{Binding HasIncome}">
                         <chart:SfCircularChart>
                             <chart:SfCircularChart.Legend>
-                                <chart:ChartLegend />
+                                <chart:ChartLegend Placement="Bottom" />
                             </chart:SfCircularChart.Legend>
 
                             <chart:PieSeries
@@ -114,7 +114,7 @@
                         </chart:SfCircularChart>
                     </Grid>
 
-                    <VerticalStackLayout HeightRequest="300" 
+                    <VerticalStackLayout HeightRequest="300"
                                          IsVisible="{Binding IsIncomeEmpty}" 
                                          VerticalOptions="Center" 
                                          HorizontalOptions="Center" 

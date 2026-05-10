@@ -31,16 +31,41 @@
                 <Label Text="DATA MANAGEMENT" FontSize="13" FontAttributes="Bold" TextColor="Gray" Margin="10,0,0,0" />
                 
                 <Border Stroke="LightGray" StrokeThickness="1" StrokeShape="RoundRectangle 10" BackgroundColor="White">
-                    <Grid Padding="15" RowDefinitions="Auto">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding ExportToJsonCommand}" />
-                        </Grid.GestureRecognizers>
-                        
-                        <VerticalStackLayout>
-                            <Label Text="Export to JSON" FontSize="16" TextColor="Black" />
-                            <Label Text="Save your history to a data file" FontSize="12" TextColor="Gray" />
-                        </VerticalStackLayout>
-                    </Grid>
+                    <VerticalStackLayout>
+                        <Grid Padding="15" RowDefinitions="Auto">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ExportToJsonCommand}" />
+                            </Grid.GestureRecognizers>
+                            <VerticalStackLayout>
+                                <Label Text="Export to JSON" FontSize="16" TextColor="Black" />
+                                <Label Text="Save your history to a data file" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="#EEEEEE" />
+
+                        <Grid Padding="15" RowDefinitions="Auto">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ImportFromJsonCommand}" />
+                            </Grid.GestureRecognizers>
+                            <VerticalStackLayout>
+                                <Label Text="Import from JSON" FontSize="16" TextColor="Black" />
+                                <Label Text="Load transactions from a data file" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="#EEEEEE" />
+
+                        <Grid Padding="15" RowDefinitions="Auto">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding LoadDemoDataCommand}" />
+                            </Grid.GestureRecognizers>
+                            <VerticalStackLayout>
+                                <Label Text="Load Demo Data" FontSize="16" TextColor="Black" />
+                                <Label Text="Insert sample transactions for presentation" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
             

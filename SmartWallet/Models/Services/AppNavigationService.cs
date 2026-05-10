@@ -10,7 +10,8 @@ public class AppNavigationService(IServiceProvider serviceProvider) : IAppNaviga
     public void ShowMainApp()
     {
         var shell = serviceProvider.GetRequiredService<AppShell>();
-        var window = Application.Current?.Windows.FirstOrDefault();
+        
+        var window = Application.Current?.Windows is [var firstWindow, ..] ? firstWindow : null;
 
         if (window is null)
             throw new InvalidOperationException("The application window is not available yet.");

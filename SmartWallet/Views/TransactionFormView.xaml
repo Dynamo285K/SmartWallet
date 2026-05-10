@@ -8,7 +8,7 @@
 
     <VerticalStackLayout Spacing="15" Padding="20">
         
-        <Label Text="Amount (€)" FontSize="16" FontAttributes="Bold" />
+        <Label Text="Amount (EUR)" FontSize="16" FontAttributes="Bold" />
         <Entry Text="{Binding Amount}" Keyboard="Numeric" Placeholder="0" FontSize="24" />
 
         <Label Text="Category" FontSize="16" FontAttributes="Bold" />

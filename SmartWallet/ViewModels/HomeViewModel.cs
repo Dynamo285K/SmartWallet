@@ -8,6 +8,7 @@ namespace SmartWallet.ViewModels;
 
 public partial class HomeViewModel(
     TransactionService transactionService, 
+    IDialogService dialogService,
     IWalletNavigationService navigationService) : ObservableObject
 {
     [ObservableProperty]
@@ -21,27 +22,36 @@ public partial class HomeViewModel(
     public async Task LoadDataAsync()
     {
         IsLoading = true;
-
-        var allTransactions = await transactionService.GetAllTransactionsAsync();
-
-        decimal currentBalance = 0;
-        foreach (var t in allTransactions)
+        try
         {
-            if (t.IsIncome)
-                currentBalance += t.Amount;
-            else
-                currentBalance -= t.Amount;
-        }
-        Balance = currentBalance;
+            var allTransactions = await transactionService.GetAllTransactionsAsync();
 
-        RecentTransactions.Clear();
-        var top5 = allTransactions.Take(5);
-        foreach (var t in top5)
+            decimal currentBalance = 0;
+            foreach (var t in allTransactions)
+            {
+                if (t.IsIncome)
+                    currentBalance += t.Amount;
+                else
+                    currentBalance -= t.Amount;
+            }
+            Balance = currentBalance;
+
+            RecentTransactions.Clear();
+            var top5 = allTransactions.Take(5);
+            foreach (var t in top5)
+            {
+                RecentTransactions.Add(t);
+            }
+        }
+        catch (Exception ex)
         {
-            RecentTransactions.Add(t);
+            System.Diagnostics.Debug.WriteLine(ex);
+            await dialogService.ShowAlertAsync("Error", "An error occurred while loading the data.");
         }
-
-        IsLoading = false;
+        finally
+        {
+            IsLoading = false;
+        }
     }
     
     [RelayCommand]

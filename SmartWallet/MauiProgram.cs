@@ -31,7 +31,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAppNavigationService, AppNavigationService>();
         builder.Services.AddSingleton<IDialogService, DialogService>();
         builder.Services.AddSingleton<IWalletNavigationService, WalletNavigationService>();
-        builder.Services.AddSingleton<IExportService, ExportService>();
+        builder.Services.AddSingleton<IImportExportService, ImportExportService>();
+        builder.Services.AddSingleton<SeedService>();
 
         builder.Services.AddTransient<AppShell>();
         
