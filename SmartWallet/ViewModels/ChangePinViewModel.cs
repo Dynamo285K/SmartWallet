@@ -66,19 +66,21 @@ public partial class ChangePinViewModel(
 
         try
         {
-            if (!_isEnteringNewPin) 
+            if (!_isEnteringNewPin)
             {
                 var isCorrect = await authService.VerifyPinAsync(EnteredPin);
+                EnteredPin = string.Empty;
+
                 if (isCorrect)
                 {
-                    _isEnteringNewPin = true; 
-                    EnteredPin = string.Empty;
-                    TitleText = "Enter NEW PIN"; 
+                    await Task.Delay(600);
+                    _isEnteringNewPin = true;
+                    TitleText = "Enter NEW PIN";
                 }
                 else
                 {
                     ErrorMessage = "Incorrect PIN. Try again.";
-                    EnteredPin = string.Empty;
+                    await Task.Delay(600);
                 }
             }
             else 

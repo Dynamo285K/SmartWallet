@@ -28,6 +28,12 @@ public partial class TransactionsViewModel(
     [ObservableProperty]
     public partial string SelectedPeriod { get; set; } = "All Time";
 
+    [ObservableProperty]
+    public partial string EmptyTitle { get; set; } = "No transactions yet.";
+
+    [ObservableProperty]
+    public partial string EmptySubtitle { get; set; } = "Add your first income or expense.";
+
     public ObservableCollection<string> CategoriesFilter { get; } = ["All Categories"];
     public ObservableCollection<string> PeriodsFilter { get; } = ["All Time"];
     public ObservableCollection<TransactionGroup> GroupedTransactions { get; set; } = [];
@@ -111,7 +117,24 @@ public partial class TransactionsViewModel(
             filtered = filtered.Where(t => new DateTime(t.Date.Year, t.Date.Month, 1).ToString("MMMM yyyy").ToUpper() == SelectedPeriod);
         }
 
-        UpdateGroupedList(filtered.ToList());
+        var results = filtered.ToList();
+
+        var hasActiveFilter = !string.IsNullOrWhiteSpace(SearchText)
+            || SelectedCategory != "All Categories"
+            || SelectedPeriod != "All Time";
+
+        if (hasActiveFilter)
+        {
+            EmptyTitle = "No results found.";
+            EmptySubtitle = "Try adjusting your search or filters.";
+        }
+        else
+        {
+            EmptyTitle = "No transactions yet.";
+            EmptySubtitle = "Add your first income or expense.";
+        }
+
+        UpdateGroupedList(results);
     }
     
     private void UpdateGroupedList(List<Transaction> transactions)

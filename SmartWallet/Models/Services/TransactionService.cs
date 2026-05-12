@@ -33,6 +33,7 @@ public class TransactionService(DatabaseService databaseService, UserService use
     public async Task<int> UpdateTransactionAsync(Transaction transaction)
     {
         var db = await databaseService.GetDatabaseAsync();
+        transaction.UserId = await GetCurrentUserIdAsync();
         return await db.UpdateAsync(transaction);
     }
 
@@ -40,5 +41,12 @@ public class TransactionService(DatabaseService databaseService, UserService use
     {
         var db = await databaseService.GetDatabaseAsync();
         return await db.DeleteAsync(transaction);
+    }
+
+    public async Task DeleteAllTransactionsAsync()
+    {
+        var db = await databaseService.GetDatabaseAsync();
+        var userId = await GetCurrentUserIdAsync();
+        await db.ExecuteAsync("DELETE FROM Transactions WHERE UserId = ?", userId);
     }
 }

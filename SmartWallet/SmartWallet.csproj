@@ -31,7 +31,7 @@
         <ApplicationTitle>SmartWallet</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>com.companyname.smartwallet</ApplicationId>
+        <ApplicationId>com.tomas.KeyCreate</ApplicationId>
 
         <!-- Versions -->
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>

@@ -65,6 +65,18 @@
                                 <Label Text="Insert sample transactions for presentation" FontSize="12" TextColor="Gray" />
                             </VerticalStackLayout>
                         </Grid>
+
+                        <BoxView HeightRequest="1" Color="#EEEEEE" />
+
+                        <Grid Padding="15" RowDefinitions="Auto">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ClearAllTransactionsCommand}" />
+                            </Grid.GestureRecognizers>
+                            <VerticalStackLayout>
+                                <Label Text="Clear All Transactions" FontSize="16" TextColor="#F44336" />
+                                <Label Text="Permanently delete all transaction history" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                        </Grid>
                     </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>

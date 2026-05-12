@@ -122,7 +122,8 @@ public partial class LoginViewModel(
             }
 
             ErrorMessage = "Wrong PIN.";
-            EnteredPin = string.Empty; 
+            await Task.Delay(600);
+            EnteredPin = string.Empty;
         }
         catch
         {

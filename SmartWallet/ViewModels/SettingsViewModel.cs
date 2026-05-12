@@ -8,7 +8,8 @@ public partial class SettingsViewModel(
     IImportExportService importExportService,
     IDialogService dialogService,
     IWalletNavigationService navigationService,
-    SeedService seedService) : ObservableObject
+    SeedService seedService,
+    TransactionService transactionService) : ObservableObject
 {
     [RelayCommand]
     private async Task ChangePinAsync()
@@ -36,6 +37,20 @@ public partial class SettingsViewModel(
             await dialogService.ShowAlertAsync("Demo Data", "Demo data already exists. Delete all transactions first.");
         else
             await dialogService.ShowAlertAsync("Demo Data", "30 demo transactions loaded across 5 months.");
+    }
+
+    [RelayCommand]
+    private async Task ClearAllTransactionsAsync()
+    {
+        var confirmed = await dialogService.ShowConfirmationAsync(
+            "Clear All Transactions",
+            "This will permanently delete all your transactions. Are you sure?",
+            "Delete All", "Cancel");
+
+        if (!confirmed) return;
+
+        await transactionService.DeleteAllTransactionsAsync();
+        await dialogService.ShowAlertAsync("Done", "All transactions have been deleted.");
     }
 
     [RelayCommand]

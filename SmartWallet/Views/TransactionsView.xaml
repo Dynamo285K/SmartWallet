@@ -73,14 +73,14 @@
                                          Margin="0, 80, 0, 0">
 
                         <Image Source="hourglass_empty.png" VerticalOptions="Center" HorizontalOptions="Center"/>
-                        <Label Text="No transactions yet." 
-                               FontSize="20" 
-                               FontAttributes="Bold" 
-                               TextColor="Gray" 
+                        <Label Text="{Binding EmptyTitle}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="Gray"
                                HorizontalOptions="Center" />
-                        <Label Text="Add your first income or expense." 
-                               FontSize="14" 
-                               TextColor="LightGray" 
+                        <Label Text="{Binding EmptySubtitle}"
+                               FontSize="14"
+                               TextColor="LightGray"
                                HorizontalOptions="Center" />
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
