@@ -1,13 +1,8 @@
 using System.Text.Json;
 using SmartWallet.Models.Entities;
+using SmartWallet.Models.Interfaces;
 
 namespace SmartWallet.Models.Services;
-
-public interface IImportExportService
-{
-    Task<bool> ExportTransactionsToJsonAsync();
-    Task<int> ImportTransactionsFromJsonAsync();
-}
 
 public class ImportExportService(
     TransactionService transactionService) : IImportExportService

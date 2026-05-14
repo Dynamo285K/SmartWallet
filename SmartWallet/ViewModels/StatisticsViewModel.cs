@@ -7,6 +7,7 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using SmartWallet.Models.Entities;
 using SmartWallet.Models.Services;
+using SmartWallet.Models.Interfaces;
 
 namespace SmartWallet.ViewModels;
 

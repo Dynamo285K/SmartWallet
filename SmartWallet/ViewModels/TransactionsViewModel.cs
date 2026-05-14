@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SmartWallet.Models.Entities;
 using SmartWallet.Models.Services;
+using SmartWallet.Models.Interfaces;
 
 namespace SmartWallet.ViewModels;
 

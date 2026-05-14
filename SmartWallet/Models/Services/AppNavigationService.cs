@@ -1,9 +1,6 @@
-namespace SmartWallet.Models.Services;
+using SmartWallet.Models.Interfaces;
 
-public interface IAppNavigationService
-{
-    void ShowMainApp();
-}
+namespace SmartWallet.Models.Services;
 
 public class AppNavigationService(IServiceProvider serviceProvider) : IAppNavigationService
 {

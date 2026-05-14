@@ -1,18 +1,8 @@
 using SmartWallet.Models.Entities;
+using SmartWallet.Models.Interfaces;
 using SmartWallet.Views;
 
 namespace SmartWallet.Models.Services;
-
-public interface IWalletNavigationService
-{
-    Task GoToAddTransactionAsync(bool isIncome);
-
-    Task GoToEditTransactionAsync(Transaction transaction);
-
-    Task GoToChangePinAsync();
-
-    Task GoBackAsync();
-}
 
 public class WalletNavigationService : IWalletNavigationService
 {

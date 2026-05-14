@@ -26,10 +26,6 @@ public class DatabaseService
             await _db.CreateTableAsync<User>();
             await _db.CreateTableAsync<Transaction>();
 
-            // Migrate existing transactions that have no UserId assigned yet
-            await _db.ExecuteAsync(
-                "UPDATE Transactions SET UserId = (SELECT Id FROM Users LIMIT 1) WHERE UserId = 0");
-
             return _db;
         }
         finally

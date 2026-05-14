@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using SmartWallet.Models.Services;
+using SmartWallet.Models.Interfaces;
 using SmartWallet.ViewModels;
 using SmartWallet.Views;
 using SkiaSharp.Views.Maui.Controls.Hosting;
