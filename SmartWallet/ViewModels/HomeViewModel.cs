@@ -18,7 +18,7 @@ public partial class HomeViewModel(
     [ObservableProperty]
     public partial bool IsLoading { get; set; }
     
-    public ObservableCollection<Transaction> RecentTransactions { get; set; } = [];
+    public ObservableCollection<Transaction> RecentTransactions { get; } = [];
 
     public async Task LoadDataAsync()
     {

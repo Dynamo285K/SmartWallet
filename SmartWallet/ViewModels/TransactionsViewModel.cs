@@ -37,7 +37,7 @@ public partial class TransactionsViewModel(
 
     public ObservableCollection<string> CategoriesFilter { get; } = ["All Categories"];
     public ObservableCollection<string> PeriodsFilter { get; } = ["All Time"];
-    public ObservableCollection<TransactionGroup> GroupedTransactions { get; set; } = [];
+    public ObservableCollection<TransactionGroup> GroupedTransactions { get; } = [];
 
     public async Task LoadTransactionsAsync()
     {

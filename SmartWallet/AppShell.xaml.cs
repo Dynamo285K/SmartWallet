@@ -1,5 +1,7 @@
-﻿namespace SmartWallet;
-using Views;
+﻿using SmartWallet.Views;
+
+namespace SmartWallet;
+
 public partial class AppShell
 {
     public AppShell()
