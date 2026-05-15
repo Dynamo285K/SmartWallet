@@ -65,6 +65,12 @@ SmartWallet/
 └── Resources/           # Fonts, images, styles
 ```
 
+## Architecture Notes
+
+### Why SQLite is used directly (via `sqlite-net-pcl`) instead of a separate data project with `DbContext` (EF Core)
+
+SmartWallet is a small, single-user, local-first MAUI app with only two tables and no relationships, so a full `DbContext` setup with EF Core, migrations, and a separate data-layer project would be overengineering. `sqlite-net-pcl` is lightweight, AOT-friendly (important for iOS), and the existing service layer (`TransactionService`, `UserService`, `DatabaseService`) already cleanly hides all database access from the ViewModels — adding a separate project just to host a `DbContext` would only duplicate that role.
+
 ## Technologies Used
 
 - .NET 10 MAUI
