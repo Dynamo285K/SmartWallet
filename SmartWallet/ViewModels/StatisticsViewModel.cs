@@ -89,7 +89,9 @@ public partial class StatisticsViewModel(
         UpdateStatistics();
     }
 
-    partial void OnSelectedPeriodChanged(string _)
+    // Has to be value so IDE will not throw warning:
+    // Parameter name differs between partial member declarations
+    partial void OnSelectedPeriodChanged(string value)
     {
         UpdateStatistics();
     }

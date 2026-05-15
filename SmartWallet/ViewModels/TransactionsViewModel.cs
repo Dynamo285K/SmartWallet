@@ -93,9 +93,11 @@ public partial class TransactionsViewModel(
         if (!PeriodsFilter.Contains(SelectedPeriod)) SelectedPeriod = "All Time";
     }
 
-    partial void OnSearchTextChanged(string _) => ApplyFilters();
-    partial void OnSelectedCategoryChanged(string _) => ApplyFilters();
-    partial void OnSelectedPeriodChanged(string _) => ApplyFilters();
+    // Has to be value so IDE will not throw warning:
+    // Parameter name differs between partial member declarations
+    partial void OnSearchTextChanged(string value) => ApplyFilters();
+    partial void OnSelectedCategoryChanged(string value) => ApplyFilters();
+    partial void OnSelectedPeriodChanged(string value) => ApplyFilters();
 
     private void ApplyFilters()
     {

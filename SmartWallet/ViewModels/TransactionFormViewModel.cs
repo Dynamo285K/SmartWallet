@@ -68,6 +68,8 @@ public partial class TransactionFormViewModel(
         _ = LoadCategoriesSafelyAsync();
     }
 
+    // Has to be value so IDE will not throw warning:
+    // Parameter name differs between partial member declarations
     partial void OnIsIncomeChanged(bool value)
     {
         OnPropertyChanged(nameof(TitleText));
@@ -185,9 +187,9 @@ public partial class TransactionFormViewModel(
         }
 
         var isConfirmed = await dialogService.ShowConfirmationAsync(
-            "Confirmation", 
-            $"Do you really want to save this transaction in the amount of {parsedAmount:C2}?", 
-            "Yes, save", 
+            "Confirmation",
+            $"Do you really want to save this transaction in the amount of {parsedAmount:C2}?",
+            "Yes, save",
             "Cancel");
 
         if (!isConfirmed)
@@ -203,15 +205,23 @@ public partial class TransactionFormViewModel(
             Date = _originalDate
         };
 
-        if (_editingTransactionId.HasValue)
+        try
         {
-            await transactionService.UpdateTransactionAsync(transaction);
-        }
-        else
-        {
-            await transactionService.AddTransactionAsync(transaction);
-        }
+            if (_editingTransactionId.HasValue)
+            {
+                await transactionService.UpdateTransactionAsync(transaction);
+            }
+            else
+            {
+                await transactionService.AddTransactionAsync(transaction);
+            }
 
-        await navigationService.GoBackAsync();
+            await navigationService.GoBackAsync();
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(ex);
+            await dialogService.ShowAlertAsync("Error", "Unable to save transaction. Please try again.");
+        }
     }
 }

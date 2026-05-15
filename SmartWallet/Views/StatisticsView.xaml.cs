@@ -8,8 +8,8 @@ public partial class StatisticsView
 
     public StatisticsView(StatisticsViewModel viewModel)
     {
-        BindingContext = _viewModel = viewModel;
         InitializeComponent();
+        BindingContext = _viewModel = viewModel;
     }
 
     protected override void OnAppearing()

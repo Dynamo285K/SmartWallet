@@ -3,7 +3,7 @@ using SmartWallet.Views;
 
 namespace SmartWallet;
 
-public partial class App : Application
+public partial class App
 {
     private readonly IServiceProvider _serviceProvider;
 

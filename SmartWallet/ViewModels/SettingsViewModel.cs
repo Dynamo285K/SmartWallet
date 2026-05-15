@@ -1,6 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SmartWallet.Models.Services;
 using SmartWallet.Models.Interfaces;
 
 namespace SmartWallet.ViewModels;
@@ -8,9 +7,7 @@ namespace SmartWallet.ViewModels;
 public partial class SettingsViewModel(
     IImportExportService importExportService,
     IDialogService dialogService,
-    IWalletNavigationService navigationService,
-    SeedService seedService,
-    TransactionService transactionService) : ObservableObject
+    IWalletNavigationService navigationService) : ObservableObject
 {
     [RelayCommand]
     private async Task ChangePinAsync()
@@ -27,31 +24,6 @@ public partial class SettingsViewModel(
         {
             await dialogService.ShowAlertAsync("Export", "You have no transactions to export.");
         }
-    }
-
-    [RelayCommand]
-    private async Task LoadDemoDataAsync()
-    {
-        var loaded = await seedService.SeedAsync();
-
-        if (!loaded)
-            await dialogService.ShowAlertAsync("Demo Data", "Demo data already exists. Delete all transactions first.");
-        else
-            await dialogService.ShowAlertAsync("Demo Data", "30 demo transactions loaded across 5 months.");
-    }
-
-    [RelayCommand]
-    private async Task ClearAllTransactionsAsync()
-    {
-        var confirmed = await dialogService.ShowConfirmationAsync(
-            "Clear All Transactions",
-            "This will permanently delete all your transactions. Are you sure?",
-            "Delete All", "Cancel");
-
-        if (!confirmed) return;
-
-        await transactionService.DeleteAllTransactionsAsync();
-        await dialogService.ShowAlertAsync("Done", "All transactions have been deleted.");
     }
 
     [RelayCommand]
