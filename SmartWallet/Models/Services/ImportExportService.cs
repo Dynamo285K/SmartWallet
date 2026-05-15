@@ -54,8 +54,13 @@ public class ImportExportService(
         if (imported is null || imported.Count == 0)
             return 0;
 
+        var addedCount = 0;
+
         foreach (var t in imported)
         {
+            if (t.Amount <= 0 || string.IsNullOrWhiteSpace(t.Category))
+                continue;
+
             var transaction = new Transaction
             {
                 Amount = t.Amount,
@@ -65,8 +70,9 @@ public class ImportExportService(
                 Date = t.Date
             };
             await transactionService.AddTransactionAsync(transaction);
+            addedCount++;
         }
 
-        return imported.Count;
+        return addedCount;
     }
 }
