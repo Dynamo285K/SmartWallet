@@ -4,7 +4,7 @@ A personal finance tracking application built with .NET MAUI. Allows users to tr
 
 > **Note:** This application was developed and optimized for **iOS** as a mobile application. It can also be run on Android, Windows, and macOS — all features work correctly on every platform, however the UI is not fully adapted for non-iOS layouts. On desktop platforms (Windows, macOS) the interface may not look perfect, as it was designed for a mobile screen size.
 
-> ⚠️ **Important — iOS:** The iOS simulator is **only available on macOS** (it requires Xcode, which Apple distributes exclusively for Mac). It is **not possible** to run the iOS version of this app on Windows or Linux machines, even with Visual Studio / Rider installed. If you are on Windows or Linux and want to test the mobile experience, please use the **Android emulator** instead.
+> **Important — iOS:** The iOS simulator is **only available on macOS** (it requires Xcode, which Apple distributes exclusively for Mac). It is **not possible** to run the iOS version of this app on Windows or Linux machines, even with Visual Studio / Rider installed. If you are on Windows or Linux and want to test the mobile experience, please use the **Android emulator** instead.
 
 ## Features
 
